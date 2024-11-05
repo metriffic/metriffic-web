@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import Metriffic from './metriffic';
+import './style.scss';
+import Metriffic from './client';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from "react-redux";

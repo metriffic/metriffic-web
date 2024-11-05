@@ -100,3 +100,23 @@ body {
     padding-top: 2px;
     cursor: pointer;
 }
+
+.modal-dialog-centered.modal-dialog {
+    max-width: fit-content;
+    margin: 1.75rem auto;
+}
+
+.btn.btn-primary.basic_button {
+    background: none;
+    color: #1976d2;
+    border: 1px solid #1976d2;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+.basic_editbox {
+    width: 100%;
+    margin: 3px;
+    // font-size: 0.7em;
+    border: 1px solid #ddd;
+}

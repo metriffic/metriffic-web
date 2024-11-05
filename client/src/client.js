@@ -11,18 +11,22 @@ import metriffic_logo from './assets/images/metriffic.frontpage.png'
 import 'rc-dock/dist/rc-dock.css'
 import 'rc-dock/style/predefined-panels.less'
 import 'bootstrap/dist/css/bootstrap.css'
+import "./style.scss";
 
 import { store } from './redux/store'
 import { set_modal_content } from './redux/utils-slice'
-
-import "./application.css";
+import { fetch_post } from "./utils";
 
 const Metriffic = () => {
-    const [logged_in, set_logged_in] = useState(false)
-    const [show_am_tab, set_show_am_tab] = useState(false)
-    const [show_keys_tab, set_show_keys_tab] = useState(true)
+    const [logged_in, set_logged_in] = useState(false);
+    const [show_am_tab, set_show_am_tab] = useState(false);
+    const [show_keys_tab, set_show_keys_tab] = useState(true);
 
-    const modal_content = useSelector(state => state.utils.modal_content)
+    const login_username_ref = useRef(null);
+    const request_access_username_ref = useRef(null);
+    const request_access_email_ref = useRef(null);
+    
+    const modal_content = useSelector(state => state.utils.modal_content);
 
 
     React.useEffect(() => {
@@ -114,11 +118,80 @@ const Metriffic = () => {
     }
 
     const on_login_click = () => {
-        
+        store.dispatch(set_modal_content({
+            title: 'log in',
+            content: <div style={{ maxWidth: 300, textAlign:'center', margin:'0 auto'}}>
+                        {/* <input className='markup-editbox'
+                            style={{margin:'0px 10px 0px 0px', maxWidth: 200, flex:1, marginBottom:10}} 
+                            placeholder="username"
+                            ref={login_username_ref}>
+                        </input> */}
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+                            email:
+                                <input
+                                    className="basic_editbox"
+                                    placeholder="username"
+                                    ref={login_username_ref}/>
+                        </div>
+                        <p style={{ textAlign:'center', margin:0 }}> 
+                            We'll send a verification code to your registered email address...
+                        </p>
+                      </div>,
+            ok_cancel: true,
+            on_ok_click: async () => {
+                const username = login_username_ref.current.value;
+                console.log('USERNAME', username);
+
+                const response = await fetch_post('/send_otp', {
+                                    username: username,
+                                });
+                const rjson = await response.json();
+                console.log("Response", rjson);
+                store.dispatch(set_modal_content(null))
+            },
+            on_cancel_click: () => {
+                store.dispatch(set_modal_content(null))
+            },
+        }))    
     }
 
     const on_request_access_click = () => {
-
+        store.dispatch(set_modal_content({
+            title: 'request access',
+            content: <div style={{ maxWidth: 300, textAlign: 'center', margin: '0 auto' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+                            username:
+                            <input
+                                className="basic_editbox"
+                                placeholder="username"
+                                ref={request_access_username_ref}/>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+                            email:
+                            <input
+                                className="basic_editbox"
+                                placeholder="email address"
+                                ref={request_access_email_ref}/>
+                        </div>
+                        <p style={{ textAlign:'center', margin:0 }}> Submit a request to sign up</p>
+                        <p style={{ textAlign:'center', margin:0 }}> (open for beta currently)</p>
+                    </div>,
+            ok_cancel: true,
+            on_ok_click: async () => {
+                const username = request_access_username_ref.current.value;
+                const email = request_access_email_ref.current.value;
+                const response = await fetch_post('/request_access', {
+                                    username: username, 
+                                    email: email
+                                });
+                const rjson = await response.json();
+                console.log("Response", rjson);
+                store.dispatch(set_modal_content(null))
+            },
+            on_cancel_click: () => {
+                store.dispatch(set_modal_content(null))
+            },
+        }))    
     }
 
     const ModalDialog = ({title}) => {
