@@ -1,0 +1,102 @@
+html,
+body {
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+      "WenQuanYi Micro Hei", Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol";
+    height: 100%;
+}
+
+#root {
+    height: 100%;
+}
+
+#top-panel {
+    display: flex;
+    align-items: center;
+    color: black !important;
+    padding: 0px 0px 0px 10px;
+}
+ 
+.dropdown-menu {
+    margin-top: -5px !important;
+    padding-top: 5px !important;
+    --bs-dropdown-min-width: 4rem;
+}
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+.fill_width {
+    width: -moz-available !important;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available !important;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available !important;
+}
+.fill_width #pageDropDown,
+.fill_width .dropdown-item {
+    padding: 3px 8px 3px 8px !important;
+    line-height: 1;
+    font-size: 12px;
+}
+.fill_width .page-link {
+    padding: 3px 8px 3px 8px !important;
+    line-height: 1;
+    font-size: 12px;
+}
+
+.fill_width .dropdown {
+    margin-right: 10px;
+}
+
+.nav-item * {
+    font-size: 12px;
+    /*color:black !important;*/
+}
+
+.dropdown-toggle::after {
+    display: none !important; 
+}
+
+.dock-layout {
+    width: 100%;
+    min-width: 500px;
+    height: -webkit-fill-available;
+    height: -moz-available;
+    height: fill-available;
+}
+
+.dock-content .dock-tabpane {
+    overflow: auto;
+}
+.dock-content .dock-tabpane {
+    overflow: auto;
+}
+.dock-nav {
+    height: 24px;
+    font-size: 10px;
+}
+.dock-panel.dock-style-card .dock-nav-wrap {
+    padding-top: 2px;
+}
+.dock-tab-close-btn {
+    right: 0;
+    font-size: 9px !important;
+    top: 5px !important;
+    padding-right: 0px !important;
+    color: #073c72
+}
+.dock-panel.dock-style-card .dock-panel-max-btn {
+    margin-top: 1px;
+}
+.dock-tab > div {
+    padding: 2px 22px 4px 7px;
+    outline-color: #108EE9;
+}  
+
+.tab-icon {
+    color: #073c72;
+    height: 16px;
+    width: 16px;
+    margin-left: 8px;
+    padding-top: 2px;
+    cursor: pointer;
+}

@@ -1,0 +1,23 @@
+{
+  "name": "metriffic-web-server",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "application.js",
+  "scripts": {
+    "start": "node application.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "env-var": "^7.5.0",
+    "express": "^4.21.1",
+    "graphql": "^16.9.0",
+    "graphql-request": "^7.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.16",
+    "otp-generator": "^4.0.1",
+    "ws": "^8.18.0"
+  }
+}
