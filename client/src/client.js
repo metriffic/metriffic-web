@@ -22,17 +22,16 @@ const Metriffic = () => {
     const [show_am_tab, set_show_am_tab] = useState(false);
     const [show_keys_tab, set_show_keys_tab] = useState(true);
 
-    const login_username_ref = useRef(null);
-    const request_access_username_ref = useRef(null);
-    const request_access_email_ref = useRef(null);
+    
+    const send_username_ref = useRef(null);
+    const send_email_ref = useRef(null);
+    const verify_username_ref = useRef(null);
+    const verify_otp_ref = useRef(null);
     
     const modal_content = useSelector(state => state.utils.modal_content);
 
 
     React.useEffect(() => {
-        fetch("/api")
-        .then((res) => res.json())
-        .then((data) => console.log(data.message));
     }, []);
 
        
@@ -117,75 +116,142 @@ const Metriffic = () => {
         // }        
     }
 
-    const on_login_click = () => {
-        store.dispatch(set_modal_content({
-            title: 'log in',
-            content: <div style={{ maxWidth: 300, textAlign:'center', margin:'0 auto'}}>
-                        {/* <input className='markup-editbox'
-                            style={{margin:'0px 10px 0px 0px', maxWidth: 200, flex:1, marginBottom:10}} 
-                            placeholder="username"
-                            ref={login_username_ref}>
-                        </input> */}
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                            email:
-                                <input
-                                    className="basic_editbox"
-                                    placeholder="username"
-                                    ref={login_username_ref}/>
-                        </div>
-                        <p style={{ textAlign:'center', margin:0 }}> 
-                            We'll send a verification code to your registered email address...
-                        </p>
-                      </div>,
-            ok_cancel: true,
-            on_ok_click: async () => {
-                const username = login_username_ref.current.value;
-                console.log('USERNAME', username);
+    const modal_content_send_otp = {
+        title: 'log in',
+        content: <div style={{maxWidth:300, margin:'0 auto'}}>
+                    <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
+                    <label style={{width:'30%', textAlign:'right', marginRight:10}}>username:</label>
+                    <input
+                        className='basic_editbox'
+                        placeholder='username'
+                        ref={send_username_ref}
+                        style={{width:'50%', textAlign:'left'}} />
+                    </div>
+                    <p style={{ textAlign:'center', margin:0 }}> 
+                        we'll send a verification code to your registered email address...
+                    </p>
+                  </div>,
+        ok_cancel: true,
+        on_ok_click: async () => {
+            const username = send_username_ref.current.value;
+            const response = await fetch_post('/send_otp', {
+                                username: username,
+                            });
+            const rjson = await response.json();
+            if(rjson.status === 'success') {
+                store.dispatch(set_modal_content(modal_content_verify_otp))
+            } else {
+                store.dispatch(set_modal_content(modal_content_error(rjson.message)))
+            }
+        },
+        on_cancel_click: () => {
+            store.dispatch(set_modal_content(null))
+        },
+    }; 
 
-                const response = await fetch_post('/send_otp', {
-                                    username: username,
-                                });
-                const rjson = await response.json();
-                console.log("Response", rjson);
-                store.dispatch(set_modal_content(null))
-            },
-            on_cancel_click: () => {
-                store.dispatch(set_modal_content(null))
-            },
-        }))    
+    const modal_content_verify_otp = {
+        title: 'verify otp',
+        content: <div style={{maxWidth:300, margin:'0 auto'}}>
+                    <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
+                    <label style={{width:'30%', textAlign:'right', marginRight:10}}>username:</label>
+                    <input
+                        className='basic_editbox'
+                        placeholder='username'
+                        ref={verify_username_ref}
+                        style={{width:'50%', textAlign:'left'}} />
+                    </div>
+                    <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
+                    <label style={{width:'30%', textAlign:'right', marginRight:10}}>OTP:</label>
+                    <input
+                        className="basic_editbox"
+                        placeholder="otp"
+                        ref={verify_otp_ref}
+                        style={{width:'50%', textAlign:'left'}} />
+                    </div>
+                    <p style={{textAlign:'center', margin:0}}>
+                    email with OTP is sent, copy the code to the field above to complete sign-in...
+                    </p>
+                </div>,
+        ok_cancel: true,
+        on_ok_click: async () => {
+            const username = verify_username_ref.current.value;
+            const otp = verify_otp_ref.current.value;
+            const response = await fetch_post('/verify_otp', {
+                                username: username,
+                                otp: otp
+                            });
+            const rjson = await response.json();
+            if(rjson.status === 'success') {
+                store.dispatch(set_modal_content(modal_content_success(rjson.message)));
+                setTimeout(() => {store.dispatch(set_modal_content(null))}, 2000);
+            } else {
+                store.dispatch(set_modal_content(modal_content_error(rjson.message)));
+            }
+        },
+        on_cancel_click: () => {
+            store.dispatch(set_modal_content(null))
+        },
+    }; 
+
+
+    const modal_content_success = (message) => ({
+        title: 'success',
+        content: <div style={{ maxWidth: 300, textAlign:'center', margin:'0 auto'}}>
+                    <p style={{ textAlign:'center', margin:0 }}> 
+                        param pam pam: {message}
+                    </p>
+                 </div>,
+    }); 
+
+    const modal_content_error = (error) => ({
+        title: 'failure...',
+        content: <div style={{ maxWidth: 300, textAlign:'center', margin:'0 auto'}}>
+                    <p style={{ textAlign:'center', margin:0 }}> 
+                        {error}
+                    </p>
+                 </div>,
+        close: true,
+        on_ok_click: async () => {
+            store.dispatch(set_modal_content(null))
+        },
+    }); 
+
+    const on_login_click = () => {
+        store.dispatch(set_modal_content(modal_content_send_otp))    
     }
 
     const on_request_access_click = () => {
         store.dispatch(set_modal_content({
             title: 'request access',
-            content: <div style={{ maxWidth: 300, textAlign: 'center', margin: '0 auto' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                            username:
-                            <input
-                                className="basic_editbox"
-                                placeholder="username"
-                                ref={request_access_username_ref}/>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                            email:
-                            <input
-                                className="basic_editbox"
-                                placeholder="email address"
-                                ref={request_access_email_ref}/>
-                        </div>
-                        <p style={{ textAlign:'center', margin:0 }}> Submit a request to sign up</p>
-                        <p style={{ textAlign:'center', margin:0 }}> (open for beta currently)</p>
-                    </div>,
+            content: <div style={{maxWidth:300, margin:'0 auto'}}>
+                    <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
+                    <label style={{width:'30%', textAlign:'right', marginRight:10}}>username:</label>
+                    <input
+                        className='basic_editbox'
+                        placeholder='username'
+                        ref={send_username_ref}
+                        style={{width:'50%', textAlign:'left'}} />
+                    </div>
+                    <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
+                    <label style={{width:'30%', textAlign:'right', marginRight:10}}>email:</label>
+                    <input
+                        className="basic_editbox"
+                        placeholder="otp"
+                        ref={send_email_ref}
+                        style={{width:'50%', textAlign:'left'}} />
+                    </div>
+                    <p style={{ textAlign:'center', margin:0 }}> submit a request to sign up</p>
+                    <p style={{ textAlign:'center', margin:0 }}> (open for beta currently)</p>
+                </div>,
             ok_cancel: true,
             on_ok_click: async () => {
-                const username = request_access_username_ref.current.value;
-                const email = request_access_email_ref.current.value;
+                const username = send_username_ref.current.value;
+                const email = send_email_ref.current.value;
                 const response = await fetch_post('/request_access', {
                                     username: username, 
                                     email: email
                                 });
                 const rjson = await response.json();
-                console.log("Response", rjson);
                 store.dispatch(set_modal_content(null))
             },
             on_cancel_click: () => {
@@ -200,31 +266,28 @@ const Metriffic = () => {
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
                 show={modal_content}>
-                <Modal.Header >
-                    <Modal.Title id="contained-modal-title-vcenter" style={{fontSize:14,fontWeight:'bold'}}>
-                      {modal_content ? modal_content.title : 'missing title'}
-                    </Modal.Title>
-                </Modal.Header>
-                {
-                    !(modal_content && modal_content.action_in_progress) && 
-                    (<Modal.Body style={{fontSize:12,fontWeight:'normal'}} >
+                { modal_content && (<>
+                    <Modal.Header >
+                        <Modal.Title id="contained-modal-title-vcenter" style={{fontSize:14,fontWeight:'bold'}}>
+                        {modal_content.title}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={{fontSize:12,fontWeight:'normal'}} >
                         {modal_content ? modal_content.content : 'missing content'}
-                    </Modal.Body>)
-                }
-                {
-                    !(modal_content && (modal_content.action_in_progress || modal_content.ok_cancel)) &&
-                    (<Modal.Footer>
-                        <Button className='basic_button' onClick={() => set_modal_content(null)}>Close</Button>
-                    </Modal.Footer>)
-                }
-                {
-                    (modal_content && modal_content.ok_cancel) &&
-                    (<Modal.Footer>
-                        <Button className='basic_button' onClick={modal_content.on_ok_click}>Ok</Button>
-                        <Button className='basic_button' onClick={modal_content.on_cancel_click}>Cancel</Button>
-                    </Modal.Footer>)
-                }
-
+                    </Modal.Body>
+                    {
+                        modal_content.close &&
+                        (<Modal.Footer>
+                            <Button className='basic_button' onClick={() => store.dispatch(set_modal_content(null))}>Close</Button>
+                        </Modal.Footer>)
+                    }
+                    {
+                        modal_content.ok_cancel &&
+                        (<Modal.Footer>
+                            <Button className='basic_button' onClick={modal_content.on_ok_click}>Ok</Button>
+                            <Button className='basic_button' onClick={modal_content.on_cancel_click}>Cancel</Button>
+                        </Modal.Footer>)
+                    }</>) }
             </Modal>
         )
     }

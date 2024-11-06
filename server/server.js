@@ -7,6 +7,7 @@ import otpGenerator from 'otp-generator';
 import {fileURLToPath} from 'url';
 import { metriffic_client } from './metriffic_gql.js';
 import gql from 'graphql-tag';
+import { config } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -80,27 +81,10 @@ app.post('/send_otp', async (req, res) => {
         from: 'agent@metriffic.com',
         to: 'vazkus@yahoo.com',
         subject: 'OTP to complete your signin',
-        html: `<html> <h1>Hi,</h1> <br/><p style="color:grey; font-size:1.2em">
-                Please use the below OTP code to complete your account login on Metriffic
-               </p><br><br><h1 style="color:orange">${code}</h1></html>`,
+        html: `<p style="font-size:1em">
+                 Please use the below OTP code to complete your account login on Metriffic</p>
+               <p style="color:blue; font-size:1.2em"><b>${code}</b></p>`,
     };
-
-    // 10 min from now
-    const expiry_date = Date.now() + 600000;
-    const mutation_save_otp = gql`
-        mutation SaveOtp($email: String!, $otp: String!, $expiry: Float!) {
-            saveOtp(email: $email, otp: $otp, expiry: $expiry) 
-            {
-                success
-                message
-            }
-        }`;
-    const mutation_variables = {
-        username: username,
-        otp: code,
-        expiry: expiry_date,
-    };
-
 
     try {
         await transporter.sendMail(mail_options, (err, info) => {
@@ -111,14 +95,30 @@ app.post('/send_otp', async (req, res) => {
             }
         });
 
+        // 10 min from now
+        const expiry_sec = Math.floor((Date.now() + 600000) / 1000);
+        const mutation_variables = {
+            username: username,
+            otp: code,
+            expiry: expiry_sec,
+        };
+        const mutation_save_otp = gql`
+            mutation SaveOtp($username: String!, $otp: String!, $expiry: Int!) {
+                saveOTP(username: $username, otp: $otp, expiry: $expiry) 
+                {
+                    status
+                    message
+                }
+            }`;
         const save_otp_result = await metriffic_client.gql.mutate({
                 mutation: mutation_save_otp,
                 variables: mutation_variables
             });
-        if (save_otp_result.saveOtp.success) {
+        console.log('SAVE OTP', save_otp_result)
+        if (save_otp_result.data.saveOTP.status) {
             return res.json({ status: 'success', message: 'OTP has been sent to the provided email.' });
         } else {
-            return res.json({ status: 'failed', message: save_otp_result.saveOtp.message });
+            return res.json({ status: 'failed', message: save_otp_result.data.saveOTP.message });
         }
     } catch (error) {
         console.error(error);
@@ -129,56 +129,40 @@ app.post('/send_otp', async (req, res) => {
 
 app.post('/verify_otp', async (req, res) => {
     const { username, otp } = req.body;
-  
-    const query_verify_otp = gql`
-        query VerifyOtp($username: String!, $otp: String!) {
-            verifyOtp(username: $username, otp: $otp) 
-            {
-                success
-                message
-            }
-        }`;
+    console.log('VERIFY', username, otp)
+
     try {
         // Call GraphQL query to verify OTP
         const query_variables = { username, otp };
-
+        const query_verify_otp = gql`
+        query VerifyOtp($username: String!, $otp: String!) {
+            verifyOTP(username: $username, otp: $otp) 
+            {
+                status
+                message
+            }
+        }`;
         const verify_otp_result = await metriffic_client.gql.query({
                                          query: query_verify_otp,
                                          variables: query_variables
                                     });
 
-    
-        if (verify_otp_result.verifyOtp.success) {
-            return res.json({ status: 'success', message: 'OTP successfully confirmed!' });
+        console.log('VERIFY OTP', verify_otp_result);
+        if (verify_otp_result.data.verifyOTP.status) {
+            return res.json({ status: 'success', message: 'successfully logged in.' });
         } else {
-            return res.json({ status: 'failed', message: verify_otp_result.verifyOtp.message });
+            return res.json({ status: 'failed', message: verify_otp_result.data.verifyOTP.message });
         }
     } catch (error) {
         console.error(error);
-        return res.json({ status: 'failed', message: 'Unable to verify OTP at the moment.' });
+        return res.json({ status: 'failed', message: 'unable to verify the OTP.' });
     }
   });
 
 // Handle GET requests to /api route
 app.get("/api", async (req, res) => {
-    // const all_platforms_gql = gql`{ 
-    //     allPlatforms { id name description } 
-    // }`;
-    // const all_platforms_gql = gql`
-    //     query allPlatforms { id name description } 
-    // `;
-    // try {
-    //     const response = await metriffic_client.makeRequest(query, { param: 'someValue' });
-    //     console.log(response);
-    // } catch (error) {
-    //     console.error('Error making request:', error);
-    // }
-    // const all_platforms = await metriffic_client.makeRequest(all_platforms_gql);
-
     console.log(JSON.stringify(all_platforms.data));
-
     res.json({ message: "Hello from server!" });
-
 });
   
 
