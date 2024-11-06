@@ -38,8 +38,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
 });
 
-app.post('/request_access', async (req, res) => {
-    console.log('REQUEST_ACCESS BODY', req.body)
+app.post('/signup', async (req, res) => {
+    console.log('SIGNUP BODY', req.body)
     const mail_options = {
         from: 'agent@metriffic.com',
         to: 'vazkus@yahoo.com',

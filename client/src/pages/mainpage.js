@@ -2,22 +2,24 @@ import React, { useState, useRef, useCallback } from "react";
 import { Navbar, Nav, NavDropdown, 
          Modal, Button } from 'react-bootstrap'
 import { useSelector } from "react-redux"
-
+import { useNavigate } from 'react-router-dom';
 import { DockLayout } from 'rc-dock'
-import { KeysTab } from "./tabs/keys-tab";
-import { ReactComponent as CheckIcon } from './assets/images/check.svg'
-import metriffic_logo from './assets/images/metriffic.frontpage.png'
+import { KeysTab } from "../tabs/keys-tab";
+import { ReactComponent as CheckIcon } from '../assets/images/check.svg';
+import metriffic_logo from '../assets/images/metriffic.frontpage.png';
 
-import 'rc-dock/dist/rc-dock.css'
-import 'rc-dock/style/predefined-panels.less'
-import 'bootstrap/dist/css/bootstrap.css'
-import "./style.scss";
+import 'rc-dock/dist/rc-dock.css';
+import 'rc-dock/style/predefined-panels.less';
+import 'bootstrap/dist/css/bootstrap.css';
+import '../style.scss';
 
-import { store } from './redux/store'
-import { set_modal_content } from './redux/utils-slice'
-import { fetch_post } from "./utils";
+import { store } from '../redux/store';
+import { set_modal_content } from '../redux/utils-slice';
+import { fetch_post } from "../utils";
 
 const Metriffic = () => {
+    const navigate = useNavigate();
+
     const [logged_in, set_logged_in] = useState(false);
     const [show_am_tab, set_show_am_tab] = useState(false);
     const [show_keys_tab, set_show_keys_tab] = useState(true);
@@ -117,7 +119,7 @@ const Metriffic = () => {
     }
 
     const modal_content_send_otp = {
-        title: 'log in',
+        title: 'sign in',
         content: <div style={{maxWidth:300, margin:'0 auto'}}>
                     <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
                     <label style={{width:'30%', textAlign:'right', marginRight:10}}>username:</label>
@@ -216,13 +218,13 @@ const Metriffic = () => {
         },
     }); 
 
-    const on_login_click = () => {
+    const on_signin_click = () => {
         store.dispatch(set_modal_content(modal_content_send_otp))    
     }
 
-    const on_request_access_click = () => {
+    const on_signup_click = () => {
         store.dispatch(set_modal_content({
-            title: 'request access',
+            title: 'sign up',
             content: <div style={{maxWidth:300, margin:'0 auto'}}>
                     <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
                     <label style={{width:'30%', textAlign:'right', marginRight:10}}>username:</label>
@@ -247,7 +249,7 @@ const Metriffic = () => {
             on_ok_click: async () => {
                 const username = send_username_ref.current.value;
                 const email = send_email_ref.current.value;
-                const response = await fetch_post('/request_access', {
+                const response = await fetch_post('/signup', {
                                     username: username, 
                                     email: email
                                 });
@@ -260,6 +262,10 @@ const Metriffic = () => {
         }))    
     }
 
+    const on_whatisthis_click = () => {
+        navigate('/whatisthis');
+    }
+    
     const ModalDialog = ({title}) => {
         return (
             <Modal
@@ -329,13 +335,18 @@ const Metriffic = () => {
                                 renderMenuOnMount={true}>
                                 <NavDropdown.Item
                                     // style={{width:'11em'}}
-                                    onClick={on_login_click}>
-                                    login
+                                    onClick={on_signin_click}>
+                                    sign in
                                 </NavDropdown.Item>
                                 <NavDropdown.Item
                                     // style={{width:'11em'}}
-                                    onClick={on_request_access_click}>
-                                    request access
+                                    onClick={on_signup_click}>
+                                    sign up
+                                </NavDropdown.Item>
+                                <NavDropdown.Item
+                                    // style={{width:'11em'}}
+                                    onClick={on_whatisthis_click}>
+                                    what is this?
                                 </NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
