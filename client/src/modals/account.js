@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { Modal, Button } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.css';
-import '../style.scss';
+import '../style.css';
 
 import { store } from '../redux/store';
 import { set_modal_content, set_logged_in_user } from '../redux/utils-slice';
@@ -20,7 +20,7 @@ const ModalContentError = (props) => {
             failure...
             </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{fontSize:12,fontWeight:'normal'}} >
+        <Modal.Body style={{fontSize:13,fontWeight:'normal'}} >
             <div style={{ maxWidth: 300, textAlign:'center', margin:'0 auto'}}>
                 <p style={{ textAlign:'center', margin:0 }}> 
                     {props.error}
@@ -46,7 +46,7 @@ const ModalContentSuccess = (props) => {
             success!
             </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{fontSize:12,fontWeight:'normal'}} >
+        <Modal.Body style={{fontSize:13,fontWeight:'normal'}} >
             <div style={{ maxWidth: 300, textAlign:'center', margin:'0 auto'}}>
                 <p style={{ textAlign:'center', margin:0 }}> 
                     {props.message}
@@ -90,7 +90,7 @@ const ModalContentSignup = () => {
                 sign up
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{fontSize:12,fontWeight:'normal'}} >
+            <Modal.Body style={{fontSize:13,fontWeight:'normal'}} >
                 <div style={{maxWidth:300, margin:'0 auto'}}>
                     <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
                     <label style={{width:'30%', textAlign:'right', marginRight:10}}>username:</label>
@@ -161,7 +161,7 @@ const ModalContentVerifyOTP = () => {
                 verify OTP
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{fontSize:12,fontWeight:'normal'}} >
+            <Modal.Body style={{fontSize:13,fontWeight:'normal'}} >
             <div style={{maxWidth:300, margin:'0 auto'}}>
                     <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
                     <label style={{width:'30%', textAlign:'right', marginRight:10}}>username:</label>
@@ -228,7 +228,7 @@ const ModalContentSendOTP = () => {
             sign in
             </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{fontSize:12,fontWeight:'normal'}} >
+        <Modal.Body style={{fontSize:13,fontWeight:'normal'}} >
             <div style={{maxWidth:300, margin:'0 auto'}}>
                 <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
                 <label style={{width:'30%', textAlign:'right', marginRight:10}}>username:</label>
