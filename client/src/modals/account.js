@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../style.scss';
 
 import { store } from '../redux/store';
-import { set_modal_content } from '../redux/utils-slice';
+import { set_modal_content, set_logged_in_user } from '../redux/utils-slice';
 import { fetch_post } from "../utils";
 
 const ModalContentError = (props) => {
@@ -75,6 +75,9 @@ const ModalContentSignup = () => {
     const on_cancel_click = () => {
         store.dispatch(set_modal_content(null))
     }
+    const on_key_press = (e) => {
+        if(e.keyCode === 13) on_ok_click();
+    }
 
     return (
     <Modal
@@ -95,7 +98,8 @@ const ModalContentSignup = () => {
                         className='basic_editbox'
                         placeholder='username'
                         ref={send_username_ref}
-                        style={{width:'50%', textAlign:'left'}} />
+                        style={{width:'50%', textAlign:'left'}} 
+                        onKeyDown={on_key_press}/>
                     </div>
                     <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
                     <label style={{width:'30%', textAlign:'right', marginRight:10}}>email:</label>
@@ -103,7 +107,8 @@ const ModalContentSignup = () => {
                         className="basic_editbox"
                         placeholder="otp"
                         ref={send_email_ref}
-                        style={{width:'50%', textAlign:'left'}} />
+                        style={{width:'50%', textAlign:'left'}} 
+                        onKeyDown={on_key_press}/>
                     </div>
                     <p style={{ textAlign:'center', margin:0 }}> submit a request to sign up</p>
                     <p style={{ textAlign:'center', margin:0 }}> (open for beta currently)</p>
@@ -123,23 +128,26 @@ const ModalContentVerifyOTP = () => {
     const verify_otp_ref = useRef(null);
 
     const on_ok_click = async () => {
-            const username = verify_username_ref.current.value;
-            const otp = verify_otp_ref.current.value;
-            const response = await fetch_post('/verify_otp', {
-                                username: username,
-                                otp: otp
-                            });
-            const rjson = await response.json();
-            if(rjson.status === 'success') {
-                store.dispatch(set_modal_content(<ModalContentSuccess message={rjson.message}/>));
-                setTimeout(() => {store.dispatch(set_modal_content(null))}, 2000);
-            } else {
-                store.dispatch(set_modal_content(<ModalContentError error={rjson.message}/>));
-            }
+        const username = verify_username_ref.current.value;
+        const otp = verify_otp_ref.current.value;
+        const response = await fetch_post('/verify_otp', {
+                            username: username,
+                            otp: otp
+                        });
+        const rjson = await response.json();
+        if(rjson.status === 'success') {
+            store.dispatch(set_modal_content(<ModalContentSuccess message={rjson.message}/>));
+            setTimeout(() => {store.dispatch(set_modal_content(null))}, 2000);
+            store.dispatch(set_logged_in_user(username));
+        } else {
+            store.dispatch(set_modal_content(<ModalContentError error={rjson.message}/>));
+        }
     }
-    
     const on_cancel_click = () => {
         store.dispatch(set_modal_content(null))
+    }
+    const on_key_press = (e) => {
+        if(e.keyCode === 13) on_ok_click();
     }
 
     return (
@@ -161,7 +169,8 @@ const ModalContentVerifyOTP = () => {
                         className='basic_editbox'
                         placeholder='username'
                         ref={verify_username_ref}
-                        style={{width:'50%', textAlign:'left'}} />
+                        style={{width:'50%', textAlign:'left'}} 
+                        onKeyDown={on_key_press}/>
                     </div>
                     <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
                     <label style={{width:'30%', textAlign:'right', marginRight:10}}>OTP:</label>
@@ -169,7 +178,8 @@ const ModalContentVerifyOTP = () => {
                         className="basic_editbox"
                         placeholder="otp"
                         ref={verify_otp_ref}
-                        style={{width:'50%', textAlign:'left'}} />
+                        style={{width:'50%', textAlign:'left'}} 
+                        onKeyDown={on_key_press}/>
                     </div>
                     <p style={{textAlign:'center', margin:0}}>
                     email with OTP is sent, copy the code to the field above to complete sign-in...
@@ -190,6 +200,7 @@ const ModalContentSendOTP = () => {
 
     const on_ok_click = async () => {
         const username = send_username_ref.current.value;
+
         const response = await fetch_post('/send_otp', {
                             username: username,
                         });
@@ -203,6 +214,9 @@ const ModalContentSendOTP = () => {
     const on_cancel_click = () => {
         store.dispatch(set_modal_content(null))
     }
+    const on_key_press = (e) => {
+        if(e.keyCode === 13) on_ok_click();
+     }
 
     return (
     <Modal
@@ -222,7 +236,8 @@ const ModalContentSendOTP = () => {
                     className='basic_editbox'
                     placeholder='username'
                     ref={send_username_ref}
-                    style={{width:'50%', textAlign:'left'}} />
+                    style={{width:'50%', textAlign:'left'}} 
+                    onKeyDown={on_key_press}/>
                 </div>
                 <p style={{ textAlign:'center', margin:0 }}> 
                     we'll send a verification code to your registered email address...
@@ -235,7 +250,6 @@ const ModalContentSendOTP = () => {
         </Modal.Footer>
     </Modal>) 
 }
-        
 
 export {
     ModalContentSendOTP,

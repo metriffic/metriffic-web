@@ -18,11 +18,15 @@ body {
     padding: 0px 0px 0px 10px;
 }
  
-.dropdown-menu {
-    margin-top: -5px !important;
-    padding-top: 5px !important;
-    --bs-dropdown-min-width: 4rem;
+.dropdown-menu.dropdown-menu {
+    margin-top: -10px !important;
+    // padding-top: 5px !important;
+    --bs-dropdown-min-width: 8rem;
+    --bs-dropdown-padding-y: 0.2rem;
 }
+// .nav-link {
+//     padding-bottom: 6px;
+// }
 .nav-item.dropdown:hover .dropdown-menu {
     display: block;
 }
@@ -48,7 +52,7 @@ body {
 }
 
 .nav-item * {
-    font-size: 12px;
+    font-size: 14px;
     /*color:black !important;*/
 }
 
@@ -72,7 +76,7 @@ body {
 }
 .dock-nav {
     height: 24px;
-    font-size: 10px;
+    font-size: 20px;
 }
 .dock-panel.dock-style-card .dock-nav-wrap {
     padding-top: 2px;

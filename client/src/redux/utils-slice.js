@@ -3,12 +3,12 @@ import { createSlice } from '@reduxjs/toolkit'
 const utils_slice = createSlice({
   name: 'utils',
   initialState: {
-    user_name: {},
+    logged_in_user: null,
     modal_content: null
   },
   reducers: {
-    set_user_name: (state, action) => {
-        state.user_name = action.payload
+    set_logged_in_user: (state, action) => {
+        state.logged_in_user = action.payload
     },
     set_modal_content: (state, action) => {
         state.modal_content = action.payload
@@ -17,7 +17,7 @@ const utils_slice = createSlice({
 })
 
 export const {    
-    set_user_name,
+    set_logged_in_user,
     set_modal_content   
 } = utils_slice.actions
 

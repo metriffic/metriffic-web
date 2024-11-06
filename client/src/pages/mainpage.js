@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback } from "react";
-import { Navbar, Nav, NavDropdown, 
-         Modal, Button } from 'react-bootstrap'
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import { useSelector } from "react-redux"
 import { useNavigate } from 'react-router-dom';
 import { DockLayout } from 'rc-dock'
@@ -15,16 +14,15 @@ import '../style.scss';
 
 import { store } from '../redux/store';
 import { set_modal_content } from '../redux/utils-slice';
-import { fetch_post } from "../utils";
 import { ModalContentSendOTP, ModalContentSignup } from "../modals/account";
 
 const Metriffic = () => {
     const navigate = useNavigate();
 
-    const [logged_in, set_logged_in] = useState(false);
     const [show_am_tab, set_show_am_tab] = useState(false);
     const [show_keys_tab, set_show_keys_tab] = useState(true);
 
+    const logged_in_user = useSelector(state => state.utils.logged_in_user);    
     const modal_content = useSelector(state => state.utils.modal_content);   
     const dock_layout = useRef(undefined);
 
@@ -119,8 +117,28 @@ const Metriffic = () => {
         navigate('/whatisthis');
     }
    
+    const on_metriffic_cli_click = () => {
+        // //navigate('/download_metriffic_cli');
+        // const link = document.createElement('a');
+        // link.href = 'http://localhost:3000/download_metriffic_cli'; 
+        // link.setAttribute('download', 'metriffic_cli.tar.gz'); 
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+        fetch('http://localhost:8000/download_metriffic_cli')
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'metriffic-cli.tar.gz';
+            link.click();
+            window.URL.revokeObjectURL(url);
+        });
+    }
+   
     return (
-        logged_in ? (
+        logged_in_user ? (
                 <>
                 <Navbar 
                     id='top-panel'>
@@ -130,10 +148,22 @@ const Metriffic = () => {
                             id="basic-nav-dropdown"
                             renderMenuOnMount={true}>
                             <NavDropdown.Item
-                                style={{width:'11em'}}
                                 onClick={on_view_keys_click}>
                                 keys
-                                {show_keys_tab ? <CheckIcon style={{ width:16, height:16, float: 'right', marginTop:'4px', marginLeft:'5px'}} /> : ''}
+                                {show_keys_tab ? <CheckIcon style={{ width:14, height:14, float: 'right', marginTop:'4px', marginLeft:'5px'}} /> : ''}
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown 
+                            title="help" 
+                            id="basic-nav-dropdown"
+                            renderMenuOnMount={true}>
+                            <NavDropdown.Item
+                                onClick={on_whatisthis_click}>
+                                what is this?
+                            </NavDropdown.Item>
+                            <NavDropdown.Item
+                                onClick={on_metriffic_cli_click}>
+                                download metriffic-cli source
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
