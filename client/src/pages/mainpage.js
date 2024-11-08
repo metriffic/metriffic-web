@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { DockLayout } from 'rc-dock'
 import { KeysTab } from "../tabs/profile-tab";
 import { ReactComponent as CheckIcon } from '../assets/images/check.svg';
+import { ReactComponent as MenuIcon } from '../assets/images/menu.svg';
 import metriffic_logo from '../assets/images/metriffic.frontpage.png';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -14,7 +15,7 @@ import '../style.css';
 
 
 import { store } from '../redux/store';
-import { set_modal_content } from '../redux/utils-slice';
+import { set_modal_content, set_logged_in_user } from '../redux/utils-slice';
 import { ModalContentSendOTP, ModalContentSignup } from "../modals/account";
 
 const Metriffic = () => {
@@ -32,8 +33,8 @@ const Metriffic = () => {
     }, []);
 
     useEffect(() => {
-        if(logged_in_user) on_view_keys_click();
-    }, []);
+        if(logged_in_user && !show_profile_tab) on_view_keys_click();
+    }, [logged_in_user]);
 
     let layout_center = {
         dockbox: {
@@ -112,12 +113,16 @@ const Metriffic = () => {
         // }        
     }
 
+    const on_signout_click = () => {
+        store.dispatch(set_logged_in_user(null));
+    }
+
     const on_signin_click = () => {
-        store.dispatch(set_modal_content(<ModalContentSendOTP/>))    
+        store.dispatch(set_modal_content(<ModalContentSendOTP/>))
     }
 
     const on_signup_click = () => {
-        store.dispatch(set_modal_content(<ModalContentSignup/>))    
+        store.dispatch(set_modal_content(<ModalContentSignup/>))
     }
 
     const on_whatisthis_click = () => {
@@ -158,6 +163,10 @@ const Metriffic = () => {
                         keys
                         {show_profile_tab ? <CheckIcon style={{ width:14, height:14, float: 'right', marginTop:'4px', marginLeft:'5px'}} /> : ''}
                     </NavDropdown.Item>
+                    <NavDropdown.Item
+                        onClick={on_signout_click}>
+                        sign out
+                    </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown 
                     title="help" 
@@ -181,7 +190,7 @@ const Metriffic = () => {
                 onLayoutChange={on_layout_change}
                 style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}/>
         </div>
-        {modal_content && (<ModalContentSendOTP/>)}
+        { modal_content ? modal_content : (<></>) }
         </>
     )
 
@@ -191,7 +200,7 @@ const Metriffic = () => {
             id='top-panel'>
             <Nav>
                 <NavDropdown 
-                    title="+" 
+                    title={<MenuIcon style={{ width:20, height:20 }}/>}
                     id="basic-nav-dropdown"
                     renderMenuOnMount={true}>
                     <NavDropdown.Item

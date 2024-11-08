@@ -1,17 +1,18 @@
-const compile_header = () => {
+const compile_header = (token) => {
     return {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
 }
                     
 const fetch_get = async (...args) => {
-    let [resource, config ] = args
+    let [resource, token, config ] = args
     if(config) {
         resource += '?' + new URLSearchParams(config)
     }
     let response = await fetch(resource, {
                                    method: "GET",
-                                   headers: compile_header(),
+                                   headers: compile_header(token),
                                })
     if(response.status === 401) {
         // console.log('DISPATCHING google_login_failure!')
@@ -23,7 +24,7 @@ const fetch_get = async (...args) => {
 
 
 const fetch_post = async (...args) => {
-    let [resource, config ] = args
+    let [resource, token, config ] = args
     if(config) {
         resource += '?' + config
     }
@@ -31,7 +32,7 @@ const fetch_post = async (...args) => {
     let response = await fetch(resource, {
                                    method: "POST",
                                    //mode:"no-cors",
-                                   headers: compile_header(),
+                                   headers: compile_header(token),
                                    body: body
                                })
     if(response.status === 401) {
