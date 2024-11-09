@@ -3,6 +3,7 @@ import path from 'path';
 import cors from 'cors';
 import nodeMailer from 'nodemailer';
 import otpGenerator from 'otp-generator';
+//import tgz from 'express-tgz';
 import jwt from 'jsonwebtoken';
 import {fileURLToPath} from 'url';
 import { metriffic_client } from './metriffic_gql.js';
@@ -17,7 +18,7 @@ const PORT = process.env.PORT || 8000;
 const authenticate_token = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    
+
     if (!token) return res.sendStatus(401);
 
     jwt.verify(token, config.AUTHENTICATION_SECRET, (err, user) => {
@@ -32,8 +33,7 @@ const rate_limiter = () => {
     // Store IP addresses and their request timestamps
     const request_map = new Map();
     const WINDOW_MS = 60 * 1000; // 1 minute
-    const MAX_REQUESTS = 5;      // 5 requests per minute
-  
+    const MAX_REQUESTS = 10;      // 5 requests per minute
     return (req, res, next) => {
         const ip = req.ip || req.connection.remoteAddress;
         const now = Date.now();
@@ -41,9 +41,9 @@ const rate_limiter = () => {
         if (!request_map.has(ip)) {
             request_map.set(ip, []);
         }
-    
+
         const requests = request_map.get(ip);
-    
+
         // Remove requests outside the current time window
         const valid_requests = requests.filter(
             timestamp => now - timestamp < WINDOW_MS
@@ -59,7 +59,7 @@ const rate_limiter = () => {
         // Add current request timestamp
         valid_requests.push(now);
         request_map.set(ip, valid_requests);
-    
+
         // Clean up old entries periodically
         if (Math.random() < 0.1) { // 10% chance to clean up on each request
             for (const [key, timestamps] of request_map.entries()) {
@@ -93,7 +93,7 @@ const transporter = nodeMailer.createTransport({
       pass: config.WEB_CLIENT_EMAIL_PASSWORD,
     },
 });
- 
+
 const generate_token = (user) => {
     const sign_options = {
         //issuer:  i,
@@ -109,8 +109,8 @@ const generate_token = (user) => {
                     username: user.username,
                     user_key: user.userKey,
                     role: user.role,
-                }, 
-                config.AUTHENTICATION_SECRET, 
+                },
+                config.AUTHENTICATION_SECRET,
                 sign_options
             );
 }
@@ -119,15 +119,11 @@ const generate_token = (user) => {
 
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-});
-
 app.post('/signup', rate_limiter(), async (req, res) => {
     const mail_options = {
         from: 'agent@metriffic.com',
         to: 'vazkus@yahoo.com',
-        subject: 'Requesting access to Metriffic service', 
+        subject: 'Requesting access to Metriffic service',
         html: `<p>Got a beta signup request from:</p>
                <p style="margin-bottom:0px">  username: <b>${req.body.username}</b></p>
                <p>  email:    <b>${req.body.email}</b></p>`
@@ -144,15 +140,6 @@ app.post('/signup', rate_limiter(), async (req, res) => {
 
 app.post('/send_otp', rate_limiter(), async (req, res) => {
     const {username} = req.body;
-    
-    // const all_platforms_gql = gql`{ 
-    //     allPlatforms { id name description } 
-    // }`;
-    // const all_platforms = await metriffic_client.gql.query({
-    //                             query: all_platforms_gql
-    //  
-    //console.log('LOGIN', JSON.stringify(all_platforms.data));
-
     const code = otpGenerator.generate(12, {
         upperCase: false,
         specialChars: false,
@@ -170,7 +157,7 @@ app.post('/send_otp', rate_limiter(), async (req, res) => {
         };
         const mutation_save_otp = gql`
             mutation SaveOtp($username: String!, $otp: String!, $expiry: Int!) {
-                saveOTP(username: $username, otp: $otp, expiry: $expiry) 
+                saveOTP(username: $username, otp: $otp, expiry: $expiry)
                 {
                     status
                     email
@@ -187,9 +174,12 @@ app.post('/send_otp', rate_limiter(), async (req, res) => {
                 from: 'agent@metriffic.com',
                 to: save_otp_result.data.saveOTP.email,
                 subject: 'OTP to complete your signin',
-                html: `<p style="font-size:1em">
-                         Please use the below OTP code to complete your account login on Metriffic:
-                         <div style="color:blue; font-size:1.2em"/><b>${code}</b></div></p>`,
+                html: `<p style="font-size:1em">Hello,</p>
+                       <div style="font-size:1em">Use the code below to log in to your Metriffic account.</div>
+                       <div><b>${code}</b></div>
+                       <div>The code expires in 10 minutes.</div>
+                       <p>Didn't request this code? <a>Contact us<a>.</p>
+                      `
             };
             await transporter.sendMail(mail_options, (err, info) => {
                 if (err) {
@@ -216,9 +206,9 @@ app.post('/verify_otp', rate_limiter(), async (req, res) => {
         const query_variables = { username, otp };
         const query_verify_otp = gql`
         query VerifyOtp($username: String!, $otp: String!) {
-            verifyOTP(username: $username, otp: $otp) 
-            { 
-                status 
+            verifyOTP(username: $username, otp: $otp)
+            {
+                status
                 message
                 user {
                     username
@@ -256,10 +246,10 @@ app.post('/save_user_profile', rate_limiter(), authenticate_token, async (req, r
             username: username,
             bastion_key: bastion_key,
             user_key: user_key
-        };        
+        };
         const mutation_save_user_profile = gql`
             mutation SaveKeys($username: String!, $bastion_key: String!, $user_key: String!) {
-                saveKeys(username: $username, bastionKey: $bastion_key, userKey: $user_key) 
+                saveKeys(username: $username, bastionKey: $bastion_key, userKey: $user_key)
                 {
                         username
                         email
@@ -285,9 +275,20 @@ app.post('/save_user_profile', rate_limiter(), authenticate_token, async (req, r
 });
 
 app.get('/download_metriffic_cli', rate_limiter(), (req, res) => {
-	const file_path = '../downloads/metriffic-cli.tar.gz';
-    res.download(file_path); 
+    const file_path = path.resolve(__dirname, '..', 'downloads', 'metriffic-cli-master.zip');
+    res.setHeader('Content-Type', 'application/zip');
+    res.download(file_path, 'metriffic-cli-master.zip', (err) => {
+        if (err) {
+            console.error('Error downloading file:', err);
+            res.status(500).send(`Error downloading file: ${err.message}`);
+        }
+    });
 });
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);

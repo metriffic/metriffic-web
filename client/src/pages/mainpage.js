@@ -7,6 +7,7 @@ import { KeysTab } from "../tabs/profile-tab";
 import { ReactComponent as CheckIcon } from '../assets/images/check.svg';
 import { ReactComponent as MenuIcon } from '../assets/images/menu.svg';
 import metriffic_logo from '../assets/images/metriffic.frontpage.png';
+import { fetch_get } from "../utils";
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dock/dist/rc-dock.css';
@@ -129,24 +130,24 @@ const Metriffic = () => {
         navigate('/whatisthis');
     }
    
-    const on_metriffic_cli_click = () => {
-        // //navigate('/download_metriffic_cli');
-        // const link = document.createElement('a');
-        // link.href = 'http://localhost:3000/download_metriffic_cli'; 
-        // link.setAttribute('download', 'metriffic_cli.tar.gz'); 
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-        fetch('http://localhost:8000/download_metriffic_cli')
-        .then(response => response.blob())
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'metriffic-cli.tar.gz';
-            link.click();
-            window.URL.revokeObjectURL(url);
-        });
+    const on_metriffic_cli_click = async () => {
+        try {
+            const response = await fetch('/download_metriffic_cli', {method: 'GET'})
+            console.log('response', response)
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'metriffic-cli.zip';
+                link.click();
+                window.URL.revokeObjectURL(url);
+            } else {
+                throw new Error('Network response was not ok.');                
+            }
+        } catch (error) {
+            console.error('Download failed:', error);
+        }
     }
    
     const logged_in_page = () => (
@@ -223,8 +224,8 @@ const Metriffic = () => {
         </Navbar>
         <div style={{ display:'flex', minHeight:'50vh', justifyContent: 'center', alignItems:'center' }}>
             <img style={{maxWidth:'50%',maxHeight:'95vh', marginTop:30,
-                            border:'0px solid #ddd', borderRadius:4, padding:5}} 
-                    src={metriffic_logo} alt="Metriffic"/>
+                         border:'0px solid #ddd', borderRadius:4, padding:5}} 
+                 src={metriffic_logo} alt="Metriffic"/>
         </div>
         { modal_content ? modal_content : (<></>) }
         </>
