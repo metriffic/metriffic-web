@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"
 import { useNavigate } from 'react-router-dom';
 import { DockLayout } from 'rc-dock'
 import { KeysTab } from "../tabs/profile-tab";
+//https://www.svgrepo.com/svg/509711/align-justify
 import { ReactComponent as CheckIcon } from '../assets/images/check.svg';
 import { ReactComponent as MenuIcon } from '../assets/images/menu.svg';
 import metriffic_logo from '../assets/images/metriffic.frontpage.png';

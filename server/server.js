@@ -122,7 +122,7 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 app.post('/signup', rate_limiter(), async (req, res) => {
     const mail_options = {
         from: 'agent@metriffic.com',
-        to: 'vazkus@yahoo.com',
+        to: 'metriffic@metriffic.com',
         subject: 'Requesting access to Metriffic service',
         html: `<p>Got a beta signup request from:</p>
                <p style="margin-bottom:0px">  username: <b>${req.body.username}</b></p>
@@ -131,11 +131,12 @@ app.post('/signup', rate_limiter(), async (req, res) => {
     await transporter.sendMail(mail_options, (err, info) => {
         if (err) {
             console.log('Error when sending an email...');
+            res.json({ message: "failed to send the request, please try later..." });
         } else {
             console.log('Successfully sent an email requesting access...');
+            res.json({ message: "thank you! your request is successfull submitted for review." });
         }
       });
-    res.json({ message: "email sent!" });
 })
 
 app.post('/send_otp', rate_limiter(), async (req, res) => {
@@ -178,7 +179,7 @@ app.post('/send_otp', rate_limiter(), async (req, res) => {
                        <div style="font-size:1em">Use the code below to log in to your Metriffic account.</div>
                        <div><b>${code}</b></div>
                        <div>The code expires in 10 minutes.</div>
-                       <p>Didn't request this code? <a>Contact us<a>.</p>
+                       <p>Didn't request this code? <a href="mailto:agent@metriffic.com">Contact us</a>.</p>
                       `
             };
             await transporter.sendMail(mail_options, (err, info) => {
