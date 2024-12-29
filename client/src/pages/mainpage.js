@@ -150,6 +150,30 @@ const Metriffic = () => {
             console.error('Download failed:', error);
         }
     }
+
+    const styles = {
+        container: {
+          height: '80vh',
+          width: '100%',
+          backgroundColor: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        title: {
+          fontSize: '80px',
+          color: 'black',
+          fontWeight: 200,
+          marginBottom: '8px',
+        },
+        subtitle: {
+          fontSize: '15px',
+          fontWeight: 400,
+          color: 'black',
+        },
+      };
+      
    
     const logged_in_page = () => (
         <>
@@ -223,11 +247,16 @@ const Metriffic = () => {
                 </NavDropdown>
             </Nav>
         </Navbar>
-        <div style={{ display:'flex', minHeight:'50vh', justifyContent: 'center', alignItems:'center' }}>
-            <img style={{maxWidth:'50%',maxHeight:'95vh', marginTop:30,
-                         border:'0px solid #ddd', borderRadius:4, padding:5}} 
-                 src={metriffic_logo} alt="Metriffic"/>
-        </div>
+
+        <div style={styles.container}>
+            <h1 style={styles.title}>
+                Metriffic
+            </h1>
+            <p style={styles.subtitle}>
+                test | measure | analyze
+            </p>
+        </div> 
+
         { modal_content ? modal_content : (<></>) }
         </>
     )
