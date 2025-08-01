@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Metriffic from './pages/mainpage';
-import WhatIsThis from './pages/whatisthis';
+import AboutPage from './pages/about';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ root.render(
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Metriffic />} />
-                <Route path="/whatisthis" element={<WhatIsThis />} />
+                <Route path="/about" element={<AboutPage />} />
             </Routes>
         </BrowserRouter>
     </Provider>

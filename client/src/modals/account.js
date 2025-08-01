@@ -8,12 +8,105 @@ import { store } from '../redux/store';
 import { set_modal_content, set_logged_in_user } from '../redux/utils-slice';
 import { fetch_post } from "../utils";
 import { ModalContentError, ModalContentSuccess } from "./general";
+import ReactGA from "react-ga4";
+
+
+const ModalContentContact = () => {
+    
+    const send_email_ref = useRef(null);
+    const send_message_ref = useRef(null);
+
+    useEffect(() => {
+        ReactGA.initialize("G-0BB9RR5QRK");
+        ReactGA.send({ hitType: "pageview", page: "/about", title: "about" });  
+    }, []);
+
+    const on_ok_click = async () => {
+        ReactGA.event({
+            category: 'signup_ok',
+            action: 'Click'
+        });
+        const message =send_message_ref.current.value;
+        const email = send_email_ref.current.value;
+        const response = await fetch_post(
+                        '/contact', 
+                        undefined,
+                        {
+                            message: message, 
+                            email: email
+                        });
+        const rjson = await response.json();
+        store.dispatch(set_modal_content(<ModalContentSuccess message={rjson.message}/>))
+        setTimeout(() => {store.dispatch(set_modal_content(null))}, 1000);
+    }
+    const on_cancel_click = () => {
+        ReactGA.event({
+            category: 'signup_cancel',
+            action: 'Click'
+        });
+        store.dispatch(set_modal_content(null))
+    }
+    const on_key_press = (e) => {
+        if(e.keyCode === 13) on_ok_click();
+    }
+
+    return (
+    <Modal
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={true}>
+        <>
+            <Modal.Header >
+                <Modal.Title id="contained-modal-title-vcenter" style={{fontSize:14,fontWeight:'bold'}}>
+                get in touch...
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body style={{fontSize:13,fontWeight:'normal'}} >
+                <div style={{maxWidth:300, margin:'0 auto'}}>
+                    <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>                       
+                        <label style={{marginRight:10}}>email:</label>
+                        <input
+                            className="basic_editbox"
+                            placeholder="email"
+                            ref={send_email_ref}
+                            style={{}} 
+                            onKeyDown={on_key_press}/>
+                    </div>
+                    <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginBottom:10}}>
+                        <textarea
+                            autoFocus
+                            className='basic_editbox'
+                            ref={send_message_ref}
+                            style={{height:100,minWidth:300}} 
+                            onKeyDown={on_key_press}/>
+                    </div>
+                </div>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className='basic_button' onClick={on_ok_click}>Ok</Button>
+                <Button className='basic_button' onClick={on_cancel_click}>Cancel</Button>
+            </Modal.Footer>
+            </>
+    </Modal>
+    );
+}
+
 
 const ModalContentSignup = () => {
+    
     const send_username_ref = useRef(null);
     const send_email_ref = useRef(null);
 
+    useEffect(() => {
+        ReactGA.initialize("G-0BB9RR5QRK");
+        ReactGA.send({ hitType: "pageview", page: "/about", title: "about" });  
+    }, []);
+
     const on_ok_click = async () => {
+        ReactGA.event({
+            category: 'signup_ok',
+            action: 'Click'
+        });
         const username =send_username_ref.current.value;
         const email = send_email_ref.current.value;
         const response = await fetch_post(
@@ -28,6 +121,10 @@ const ModalContentSignup = () => {
         setTimeout(() => {store.dispatch(set_modal_content(null))}, 1000);
     }
     const on_cancel_click = () => {
+        ReactGA.event({
+            category: 'signup_cancel',
+            action: 'Click'
+        });
         store.dispatch(set_modal_content(null))
     }
     const on_key_press = (e) => {
@@ -163,6 +260,11 @@ const ModalContentSendOTP = () => {
     const send_username_ref = useRef(null);
 
     const on_ok_click = async () => {
+        ReactGA.event({
+            category: 'signin_ok',
+            action: 'Click'
+        });
+
         const username = send_username_ref.current.value;
 
         const response = await fetch_post(
@@ -179,6 +281,10 @@ const ModalContentSendOTP = () => {
         }
     }
     const on_cancel_click = () => {
+        ReactGA.event({
+            category: 'signin_cancel',
+            action: 'Click'
+        });
         store.dispatch(set_modal_content(null))
     }
     const on_key_press = (e) => {
@@ -221,5 +327,6 @@ const ModalContentSendOTP = () => {
 
 export {
     ModalContentSendOTP,
+    ModalContentContact,
     ModalContentSignup
 };

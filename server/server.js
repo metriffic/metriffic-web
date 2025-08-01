@@ -139,6 +139,26 @@ app.post('/signup', rate_limiter(), async (req, res) => {
       });
 })
 
+app.post('/contact', rate_limiter(), async (req, res) => {
+    const mail_options = {
+        from: 'agent@metriffic.com',
+        to: 'metriffic@metriffic.com',
+        subject: 'Requesting a contact..',
+        html: `<p>Got a 'get in touch' request from:</p>
+               <p style="margin-bottom:0px">  username: <b>${req.body.email}</b></p>
+               <p>  message: <b>${req.body.message}</b></p>`
+    };
+    await transporter.sendMail(mail_options, (err, info) => {
+        if (err) {
+            console.log('Error when sending an email...');
+            res.json({ message: "failed to send the request, please try later..." });
+        } else {
+            console.log('Successfully sent an email requesting access...');
+            res.json({ message: "thank you! your request is successfull submitted for review." });
+        }
+      });
+})
+
 app.post('/send_otp', rate_limiter(), async (req, res) => {
     const {username} = req.body;
     const code = otpGenerator.generate(12, {
