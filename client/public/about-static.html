@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metriffic - About</title>
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900" rel="stylesheet">
+    <style>
+        html, body, html * {
+            line-height: normal;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .about-container {
+            width: 80vw;
+        }
+
+        .about-container h4 {
+            margin-top: 2rem;
+        }
+
+        .about-container h6 {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-container p {
+            text-align: justify;
+        }
+
+        .toc {
+            font-size: 14px;
+            width: 250px;
+            background-color: #ffffff;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 1px solid #ddd;
+        }
+
+        .toc-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin: 12px 0 5px 0px;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            color: #072341;
+        }
+
+        .sub-links {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .sub-links li {
+            margin-top: 0px;
+            margin-bottom: 2px;
+        }
+
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+            width: 700px;
+        }
+
+        .image-gallery {
+            margin-bottom: 15px;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .thumbnail {
+            width: 150px;
+            object-fit: cover;
+            border-radius: 0.25rem;
+        }
+
+        .code-section {
+            display: block;
+            padding: 0.2rem 1rem;
+            margin: 0.3rem 0 .3rem 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            color: #374151;
+            font-size: 0.875rem;
+            width: -webkit-fill-available;
+        }
+
+        .code-section pre {
+            font-size: 11px;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .video-screencast {
+            width: 650px;
+            border-radius: 5px;
+            border: 1px solid #bbbbbb;
+            display: block;
+            margin: 5px auto 5px auto;
+        }
+
+        .subsection-break {
+            height: 20px;
+        }
+
+        .command-help {
+            font-size: 11px;
+            width: 800px;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            overflow-x: auto;
+        }
+
+        .stripped-p {
+            margin-bottom: 0px;
+        }
+
+        .bold-line {
+            display: block;
+            padding: 0px 30px 0px 30px;
+        }
+
+        .url-line {
+            display: block;
+            padding: 0px 30px 0px 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="about-container">
+        <aside class="toc">
+            <h4 class="toc-title">Metriffic</h4>
+            <ul class="nav-links">
+                <li>
+                    <li><a href="#section_introduction">Introduction</a></li>
+                    <ul class="sub-links">
+                        <li><a href="#subsection_about_the_service">About the Service</a></li>
+                        <li><a href="#subsection_supported_functionality">Supported Functionality</a></li>
+                    </ul>
+                    <li><a href="#section_under_the_hood">Under the Hood</a></li>
+                    <ul class="sub-links">
+                        <li><a href="#subsection_system_design">System Design</a></li>
+                        <li><a href="#subsection_source_code">Source Code</a></li>
+                        <li><a href="#subsection_build_cli">Building the CLI tool</a></li>
+                    </ul>
+
+                    <li><a href="#section_registration">User Registration</a></li>
+                    <li><a href="#section_cli_commands">CLI Commands</a></li>
+                    <ul class="sub-links">
+                        <li><a href="#subsection_show_commands"><b><u>show</u></b></a></li>
+                        <li><a href="#subsection_interactive_commands"><b><u>interactive</u></b></a></li>
+                        <li><a href="#subsection_batch_commands"><b><u>batch</u></b></a></li>
+                        <li><a href="#subsection_workspace_commands"><b><u>workspace</u></b></a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#section_knownissues">Known Issues and Limitations</a></li>
+                <li><a href="#section_nextsteps">Planned Features</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section class="content">
+                <h4 style="color:red; font-weight:600">this page is work-in-progress</h4>
+                <h4 id="section_introduction">Introduction</h4>
+                <h6 id="subsection_about_the_service">About the Service</h6>
+                <p>
+                    Metriffic is an automation tool designed to assist software development for System on 
+                    Module (SoM) platforms - the kind you'll find in consumer and commercial robotics, smart
+                    devices and similar projects. Taking inspiration from Sun Grid Engine (SGE), it applies
+                    similar task scheduling and resource management principles, but specifically tailored
+                    for SoM environments.
+                </p>
+                <p>
+                    The service simplifies platform access for both testing and performance analysis. You can validate your 
+                    applications and ML models using prerecorded datasets, run benchmarks, and conduct optimization experiments. 
+                    It's a practical tool that can help developers in tuning their application and finding the right tradeoff 
+                    between computational performance, power consumption and cost. 
+                </p>
+                <p>
+                    I started this as a side project during COVID and so the currently supported platforms are a bit dated:
+                    <b class="bold-line">Jetson Nano</b>
+                    <b class="bold-line">Google Coral Devboard</b>
+                    <b class="bold-line">Raspberry Pi4</b>
+                    <b class="bold-line">Raspberry Pi3</b>
+                    <div style="margin-bottom:10px"></div>
+                    However, adding support for new platforms and extending the grids is straightforward — I'm happy to do so 
+                    if there's interest. <br/> 
+                    Everything, including this website, runs off a small server in my garage (photos below). 
+                </p>
+                
+                <div class="image-gallery">
+                    <div class="thumbnail-container">
+                        <img src="/server/mf.1.jpg" alt="server #1" class="thumbnail" />
+                        <img src="/server/mf.2.jpg" alt="server #2" class="thumbnail" />
+                        <img src="/server/mf.3.jpg" alt="server #3" class="thumbnail" />
+                    </div>
+                </div>
+
+                <p>
+                    That works fine for now, but if I add too many boards, bandwidth might not keep up, and I'll have to consider 
+                    moving it to a colocation center.<br/>
+                    At this stage, most of the core features are in place and reasonably well-tested. Want to try it out? Drop 
+                    me a message through the main page—I'd love to share access and hear your thoughts!
+                </p>
+
+                <div class="subsection-break"></div>
+
+                <h6 id="subsection_supported_functionality">Supported Functionality</h6>
+                <p>
+                    The service supports three main types of operations:
+                </p>
+                <ul style="list-style-type:circle">
+                    <li><b>Query</b>: display available resources (e.g., platforms, Docker images) and query sessions or jobs.</li>
+                    <li><b>Session</b>: start batch-mode or interactive sessions, stop active sessions, and check session status.</li>
+                    <li><b>Workspace</b>: synchronize your local workspace with the remote one, and manage the local workspace path (show or set).</li>
+                </ul>
+                <p style="margin-bottom:10px">
+                    And it's built on these core principles:  
+                </p>              
+                <ul style="list-style-type:circle">
+                    <li><b>Containerization</b>: all processing (batch tasks or live SSH sessions) runs in Docker containers, ensuring a controlled and reproducible environment.</li>
+                    <li><b>Single-container restriction</b>: each SoM/board runs only one container at a time, guaranteeing full resource access for accurate benchmarking and comparisons.</li>
+                    <li><b>Volume mounts</b>: each running container has two fixed mounts:
+                        <ul style="list-style-type:square">
+                            <li><b>/workspace</b>: A private read/write userspace for scripts, models, datasets, and other resources.</li>
+                            <li><b>/public</b>: A public, read-only space containing shared resources like publicly available machine learning models, datasets, evaluation scripts, and similar data accessible to all users.</li>
+                        </ul>
+                    </li>    
+                </ul>
+
+                <div class="subsection-break"></div>
+
+                <h4 id="section_under_the_hood">Under the Hood</h4>
+                <h6 id="subsection_system_design">System Design</h6>
+                <p>
+                    Here's a diagram showing all the different parts of the system and how they work together
+                    and interact with each other.
+                </p>
+                <img style="display:block; margin:0px auto 20px auto; width:650px" src="system_design.svg" alt="System Design Diagram" />
+                <p class="stripped-p">On the left are our two user interfaces:</p>
+                <ul>
+                    <li>The CLI tool handles most interactions with the service, allowing users to submit and cancel jobs, check their status, and exchange data.</li>
+                    <li>The web service currently provides profile configuration functionality.</li>
+                </ul>
+                <p class="stripped-p">On the right are the metriffic cloud microservices and components.</p>
+                <p class="stripped-p" style="font-weight:bold;color:red">TBD: describe these components</p>
+
+                <div class="subsection-break"></div>
+
+                <h6 id="subsection_source_code">Source Code</h6>
+                <p class="stripped-p">
+                    Metriffic is open-source. <br/>
+                    The cloud-side code is implemented in JS/node and is available in these repositories:
+                    <a class="url-line" href="https://github.com/metriffic/metriffic-backend">https://github.com/metriffic/metriffic-backend</a>
+                    <a class="url-line" href="https://github.com/metriffic/metriffic-grid-service">https://github.com/metriffic/metriffic-grid-service</a>
+                    <a class="url-line" href="https://github.com/metriffic/metriffic-workspaces">https://github.com/metriffic/metriffic-workspaces</a>
+                    <a class="url-line" href="https://github.com/metriffic/metriffic-web">https://github.com/metriffic/metriffic-web</a>
+                    This repository contains some of the configuration scripts and docker files that can help with server setup:
+                    <a class="url-line" href="https://github.com/metriffic/metriffic-cm.git">https://github.com/metriffic/metriffic-cm.git</a>
+                    But it's only partially automated and still requires several manual steps. Feel free to contact me if you're interested in trying it out—I'm happy to help!
+                </p>
+                <p style="margin-top:10px">The command-line-tool is in C++ and is available here:
+                    <a class="url-line" href="https://github.com/metriffic/metriffic-cli.git">https://github.com/metriffic/metriffic-cli.git</a>
+                    The section below describes how it can be built.
+                </p>
+
+                <div class="subsection-break"></div>
+
+                <h6 id="subsection_build_cli">Building the CLI Tool</h6>
+                <p class="stripped-p">
+                    Command-line-tool (metriffic) is a C++ application that requires compilation. To build it
+                    for ubuntu you need to follow the these steps.
+                </p>
+                <div class="code-section">
+                    <h5>build instructions</h5>
+                    <pre># install the required packages (ubuntu 22.04+)
+sudo apt update
+sudo apt install build-essential vim git cmake libboost-system-dev libboost-chrono-dev \\
+            libboost-thread-dev libboost-filesystem-dev libssh2-1-dev openssl
+# clone the repo
+git clone https://github.com/metriffic/metriffic-cli.git
+# and build it...
+cd metriffic-cli
+git submodule update --init --recursive
+mkdir build; cd build
+cmake ..
+make</pre>
+                </div>
+                <p>
+                    (planning to share the homebrew recipe soon...)
+                </p>
+
+                <div class="subsection-break"></div>
+
+                <h4 id="section_registration">User Registration</h4>
+                <p>
+                    User registration is a two-step process. First, an account must be created on the server side by service admins.
+                    <br/>
+                    In the second step, the user generates two pairs of SSH keys and registers them in their user profile (the
+                    purpose of having two key pairs is explained in a later section).
+                    <br/>
+                    <div style="margin-bottom:10px"></div>
+                    Note that the service (at least the current implementation) is designed to not use passwords. Logging in to
+                    the web-UI works through OTP emailed to the use. And all services that work via ssh-tunneling (i.e.
+                    workspace rsync and ssh to interactive session container) work through ssh private/public keys.
+                </p>
+                <p class="stripped-p">This video demonstrates how to do the second step.</p>
+                <video class="video-screencast" controls>
+                    <source src="/screencaptures/mgen.adding_keys.mp4" type="video/mp4" />
+                </video>
+
+                <div class="subsection-break"></div>
+
+                <h4 id="section_cli_commands">CLI Commands</h4>
+                <h6 id="subsection_show_commands"><b><u>show</u></b></h6>
+                <p class="stripped-p">Command options:</p>
+                <pre class="command-help">show &lt;items&gt;: mandatory argument, the type of data to show. Can be either 'platforms',
+        'sessions' or 'docker-images'.
+   -p|--platform &lt;platform name&gt;: platform selector, can be used when querying docker-images
+   -f|--filter &lt;status&gt;: Used for sessions, format: {state:SUBMITTED|RUNNING|CANCELED|COMPLETED}.</pre>
+                <p class="stripped-p" style="margin-top:15px">Here's how it works.</p>
+                <video class="video-screencast" controls>
+                    <source src="/screencaptures/mgen.show.mp4" type="video/mp4" />
+                </video>
+
+                <div class="subsection-break"></div>
+
+                <h6 id="subsection_interactive_commands"><b><u>interactive</u></b></h6>
+                <p class="stripped-p">Command options:</p>
+                <pre class="command-help">interactive &lt;command&gt;: mandatory argument, session request to execute. Can be either
+        'start', 'stop', 'join', ''status' or 'save'.
+   -p|--platform &lt;platform name&gt;: name of the platform to start mission on.
+   -d|--docker-image &lt;docker image&gt;: docker image to instantiate on the target board.
+   -c|--comment &lt;text&gt;: description of the requested operation.
+   -n|--name &lt;name of the session&gt;: Name of the session to perform operation on.</pre>
+                <p class="stripped-p" style="margin-top:15px">This video demonstrates how this command can be used to start an interactive session and access the allocated machine.</p>
+                <video class="video-screencast" controls>
+                    <source src="/screencaptures/mgen.interactive_start.mp4" type="video/mp4" />
+                </video>
+
+                <div class="code-section">
+                    <h5>what's going on here?</h5>
+                    <div>1. The user begins by displaying the help menu for the interactive command.
+2. Initiates a session on an RPi4 machine using the standard Docker image 'rpi4-basic'.
+   This command performs the following actions:
+     - reserves a board of the specified type.
+     - launches a Docker container on the reserved board, injects the user's public
+       key into the container's '/root/.ssh/authorized_keys' file, and starts an SSH
+       server.
+     - locates an available port on the user's machine and establishes an SSH tunnel
+       through 'metriffic.com:2222' using it as a bastion, authenticated by the
+       registered bastion public key.
+     - outputs the SSH command needed to connect to the running Docker container via
+       the Metriffic bastion.
+3. Opens a new terminal tab and connects to the container via SSH.
+4. Execute a few binaries to display platform information.
+5. Following the same steps, the user starts another interactive session, this time
+   on a Jetson Nano board.
+6. Finally, the user runs the 'show sessions' command to display the status of both
+   active sessions.</div>
+                </div>
+
+                <p class="stripped-p" style="margin-top:15px">This one shows how the docker container can be modified and then committed and saved/pushed as a new image.</p>
+                <video class="video-screencast" controls>
+                    <source src="/screencaptures/mgen.interactive_save.mp4" type="video/mp4" />
+                </video>
+
+                <div class="code-section">
+                    <h5>what's going on here?</h5>
+                    <div>1. The user runs 'show sessions' to display the active RPi4 session, then
+   switches to the terminal tab where they have an SSH connection to that container.
+2. Confirms that vim is not installed inside the container and proceeds to install it.
+3. Returning to the CLI tool, the user runs 'interactive save' and names the new Docker
+   image rpi4-basic-vim.
+4. Once the operation is complete, the user calls 'show docker-images' to verify that the
+   newly created image is listed and available.</div>
+                </div>
+
+                <p class="stripped-p" style="margin-top:15px">And this one shows how to re-establish a tunnel/connection to a container of an active interactive session.</p>
+                <video class="video-screencast" controls>
+                    <source src="/screencaptures/mgen.interactive_join.mp4" type="video/mp4" />
+                </video>
+
+                <div class="code-section">
+                    <h5>what's going on here?</h5>
+                    <div>1. The user launches the CLI tool and logs in.
+2. The user then runs 'show sessions' to display information about the two running
+   interactive sessions: one on an RPi4 and another on a Jetson Nano.
+3. Calls 'interactive join' to open a tunnel to the Docker container on the RPi4 board,
+   then opens a new terminal tab and connects via SSH.
+   The same steps are repeated for the Jetson Nano session.
+4. Finally, the user stops both sessions, showing that the connections have been
+   terminated, and confirms by running sessions show again to verify both sessions
+   are closed.</div>
+                </div>
+
+                <div class="subsection-break"></div>
+
+                <h6 id="subsection_batch_commands"><b><u>batch</u></b></h6>
+                <p class="stripped-p">Command options:</p>
+                <pre class="command-help">batch &lt;command&gt;: mandatory argument, session request to execute. Can be either
+        'start', 'stop' or 'status'.
+   -p|--platform &lt;platform name&gt;: name of the platform to start mission on.
+   -d|--docker-image &lt;docker image&gt;: docker image to instantiate on the target board.
+   -r|--run-script &lt;script/binary&gt;: the script or binary command to execute,
+        mandatory for batch mode.
+   -s|--dataset-split &lt;n=1&gt;: split the dataset into this many chunks, one chunk per job.
+   -j|--jobs &lt;n=1&gt;: maximum number of simultaneous jobs.
+   -n|--name &lt;name of the session&gt;: Name of the session to perform operation on.</pre>
+                <p class="stripped-p">Demonstration of workspace commands.</p>
+                <video class="video-screencast" controls>
+                    <source src="/screencaptures/mgen.batch.mp4" type="video/mp4" />
+                </video>
+
+                <div class="code-section">
+                    <h5>what's going on here?</h5>
+                    <div>1. The user logs into the system and prints the workspace path.
+2. Switches to the workspace, showing the shell script (to be passed to the command)
+   and the Python script (which runs the batch job). The shell script demonstrates
+   the input arguments provided by the system, and the Python script shows how those
+   arguments are used.
+3. Calls 'workspace sync up' to upload the scripts to the system workspace.
+   Note: 'workspace' command is covered in section 4.4.
+4. Displays the help information for the batch command, then runs the command.
+   Batch jobs are used for running parallel jobs on the grid. This is done by
+   splitting the input dataset into chunks and feeding each chunk to a separate
+   job. The command has two important arguments that control execution:
+      -d|--dataset-split: speficies how many chunks should the dataset be split into
+      -j|--max-jobs: specifies the max number of containers that can be run on the
+                     the grid simultaneously processing those chunks. This is the
+                     max cap, the actual number of parallel jobs of course depends
+                     on priority and grid utiliziation...
+   When called, the command creates all these jobs and submits them to the scheduler.
+   The session is complete when all jobs are done, or when it's canceled (by calling
+   'batch stop' command)
+5. The user monitors the session status until it is marked COMPLETED.
+6. Finally, calls 'workspace sync down' to download the batch run artifacts into the
+   local workspace. Then lists the downloaded session folder and shows the contents of
+   output files.</div>
+                </div>
+
+                <div class="subsection-break"></div>
+
+                <h6 id="subsection_workspace_commands"><b><u>workspace</u></b></h6>
+                <p class="stripped-p">Command options:</p>
+                <pre class="command-help">workspace &lt;command&gt;: mandatory argument, workspace command to execute. Can be either
+        'sync', 'set' or 'show'.
+   &lt;direction&gt;: mandatory for 'sync' command, the direction of file synchronization.
+        Can be either 'up' or 'down'.
+   -f|--folder &lt;folder name&gt;: can be used with
+          'sync' (relative path of a subfolder to synchronize), or with
+          'set'  (specifying new folder for the workspace)'.
+   -d|--delete: used with 'sync', enables deletion of extraneous files from the receiving side.</pre>
+                <p class="stripped-p">Demonstration of workspace commands.</p>
+                <video class="video-screencast" controls>
+                    <source src="/screencaptures/mgen.workspace.mp4" type="video/mp4" />
+                </video>
+
+                <div class="code-section">
+                    <h5>what's going on here?</h5>
+                    <div>1. The user calls workspace show to display the local workspace currently set
+   for the logged-in user.
+2. Opens a new terminal tab, switches to the local workspace, and creates an empty file
+   named 'local_file'.
+3. Calls 'workspace sync up' to upload the local file to the user's workspace managed
+   by the service.
+4. Switches to two other terminal tabs with SSH sessions connected to active containers:
+   one on an RPi4 board and another on a Jetson Nano.
+   Both containers show local_file in their /workspace mount.
+5. The user then creates two additional empty files: '/workspace/rpi4_file' in the RPi4
+   container and '/workspace/jnano_file' in the Jetson Nano container.
+6. Verifies that all files are visible in the /workspace mount on both containers.
+7. Finally, the user runs 'workspace sync down' in the Metriffic CLI to synchronize the
+   local workspace with the system workspace. Lists the local directory to confirm that
+   all files have been successfully transferred.</div>
+                </div>
+
+                <h4 id="section_knownissues">Known issues and limitations</h4>
+                <ul style="list-style-type:circle">
+                    <li>Endurance of microsd cards?</li>
+                    <li>Interactive sessions get stuck pending when no resources immediately available.</li>
+                    <li class="stripped-p" style="font-weight:bold;color:red">tobeadded</li>
+                </ul>
+
+                <h4 id="section_nextsteps">Planned Features...</h4>
+                <ul style="list-style-type:circle">
+                    <li>Users sharing docker images.</li>
+                    <li>Emailing users about running interactive sessions, coming up with some kind of auto-termination policy.</li>
+                    <li>Make cpu usage data available to the running container.</li>
+                    <li>Use a current sensor per board, make power consumption data available to the running container.</li>
+                    <li>Web-ui for managing jobs, checking the status, review of run results.</li>
+                    <li class="stripped-p" style="font-weight:bold;color:red">tobeadded</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
